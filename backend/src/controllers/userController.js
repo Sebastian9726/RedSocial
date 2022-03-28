@@ -2,7 +2,12 @@ const userController = {};
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-
+const cloudinary = require('cloudinary');
+cloudinary.config({ 
+    cloud_name: 'redessocialesprueba', 
+    api_key: '243381874999616', 
+    api_secret: 'wmMNGoKeME4IE0es7FWWIQuP3kI' 
+  });
 userController.register = async (req, res) => {
     const user = new User(req.body);
     user.password = await user.encriptpassword(user.password);
@@ -13,7 +18,6 @@ userController.register = async (req, res) => {
         expiresIn: 60 * 60 * 24
     });
     
-
     return res.json({auth: true, user, token});
 }
 
@@ -92,12 +96,13 @@ userController.updatePassword = async (req, res) => {
 userController.update = async (req, res) => {
     const {id} = req.params;
     const {name, surname, mail} = req.body;
-
+    const result = await cloudinary.v2.uploader.upload(req.file.path);
     const user = await User.findById(id);
 
     user.name = name;
     user.surname = surname;
     user.mail = mail;
+    user.ruta= result,
     await user.save();
 
     res.json({message: 'successfy', user});
