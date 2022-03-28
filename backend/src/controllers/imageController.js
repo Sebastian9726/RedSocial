@@ -85,7 +85,7 @@ imagenController.getContenido = async (req, res) => {
         .populate({
             path: 'albumId',
             select: 'nombre',
-            options: { limit: 10, sort: { titulo: 1 } }
+            options: { sort: { timestamp: -1 } }
         })
     console.log("imagenes", images)
     res.json(images);
